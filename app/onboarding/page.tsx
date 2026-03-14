@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import CharityCard from "../components/CharityCard";
+
 
 const causes = [
   "Education",
@@ -11,12 +13,53 @@ const causes = [
   "Youth & mentorship",
 ];
 
+const charities = [
+    {
+      id: 1,
+      name: "Chicago Food Bank",
+      category: "Hunger",
+      description: "Providing meals to families across Chicago.",
+      supporters: 312,
+      emoji: "🍎",
+      topMatch: true,
+    },
+    {
+      id: 2,
+      name: "Youth Coding Chicago",
+      category: "Education",
+      description: "Teaching coding skills to underserved youth.",
+      supporters: 187,
+      emoji: "💻",
+      topMatch: true,
+    },
+    {
+      id: 3,
+      name: "Lake Michigan Cleanup",
+      category: "Environment",
+      description: "Keeping Chicago’s shoreline clean.",
+      supporters: 224,
+      emoji: "🌊",
+      topMatch: false,
+    },
+  ];
+  
+
 export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [cause, setCause] = useState("");
   const [cityProblem, setCityProblem] = useState("");
   const [nonprofitIdea, setNonprofitIdea] = useState("");
   const [mentorship, setMentorship] = useState("");
+  const [selectedCharities, setSelectedCharities] = useState<number[]>([]);
+
+  const toggleCharity = (id: number) => {
+    setSelectedCharities((prev) =>
+      prev.includes(id)
+        ? prev.filter((c) => c !== id)
+        : [...prev, id]
+    );
+  };
+  
 
   const next = () => setStep((s) => s + 1);
 
@@ -166,26 +209,36 @@ export default function Onboarding() {
         </>
       )}
 
-      {/* STEP 5 placeholder */}
-      {step === 5 && (
-        <>
-          <h2 className="text-2xl font-bold">
-            Pick your charities
-          </h2>
+{step === 5 && (
+  <>
+    <h2 className="text-2xl font-bold">
+      Pick your charities
+    </h2>
 
-          <p className="muted">
-            We'll match these based on your answers.
-          </p>
+    <p className="muted">
+      We matched these to your answers. Tap to select.
+    </p>
 
-          <div className="card p-4">
-            Charity cards go here (hackathon placeholder)
-          </div>
+    <div className="grid gap-4 mt-4">
+      {charities.map((charity) => (
+        <CharityCard
+          key={charity.id}
+          charity={charity}
+          selected={selectedCharities.includes(charity.id)}
+          toggle={toggleCharity}
+        />
+      ))}
+    </div>
 
-          <button onClick={next} className="btn-primary mt-4">
-            Continue
-          </button>
-        </>
-      )}
+    <button
+      onClick={next}
+      className="btn-primary mt-6 w-full"
+    >
+      Continue
+    </button>
+  </>
+)}
+
 
       {/* STEP 6 */}
       {step === 6 && (
